@@ -1,8 +1,6 @@
 package com.buyhistory.orders_servicio.service;
 
-import com.buyhistory.orders_servicio.dto.*;
-import com.buyhistory.orders_servicio.entity.Order;
-import com.buyhistory.orders_servicio.entity.OrderItem;
+import com.buyhistory.orders_servicio.model.Order;
 import com.buyhistory.orders_servicio.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,84 +12,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
+    private final OrderRepository repository;
 
     @Override
-    public OrderResponseDto createOrder(CreateOrderRequestDto request) {
-        // Calcular total
-        double total = request.getItems().stream()
-                .mapToDouble(i -> i.getPrice() * i.getQuantity())
-                .sum();
-
-        // Crear entidad Order
-        Order order = new Order();
-        order.setCustomerName(request.getCustomerName());
-        order.setCustomerEmail(request.getCustomerEmail());
+    public Order create(Order order) {
+        // Seteamos algunos campos por defecto
+        order.setId(null);                        // que Mongo genere el _id
+        if (order.getStatus() == null) {
+            order.setStatus("CREATED");
+        }
         order.setCreatedAt(LocalDateTime.now());
-        order.setTotal(total);
-        order.setStatus("CREATED");
 
-        // Dirección
-        order.setAddressStreet(request.getAddressStreet());
-        order.setAddressDetail(request.getAddressDetail());
-        order.setRegion(request.getRegion());
-        order.setCity(request.getCity());
-        order.setNotes(request.getNotes());
-
-        // Items
-        List<OrderItem> items = request.getItems().stream()
-                .map(i -> OrderItem.builder()
-                        .productId(i.getProductId())
-                        .productName(i.getProductName())
-                        .quantity(i.getQuantity())
-                        .price(i.getPrice())
-                        .order(order)
-                        .build())
-                .toList();
-
-        order.setItems(items);
-
-        Order saved = orderRepository.save(order);
-        return mapToDto(saved);
+        return repository.save(order);
     }
 
     @Override
-    public List<OrderResponseDto> getAllOrders() {
-        return orderRepository.findAll().stream()
-                .map(this::mapToDto)
-                .toList();
+    public List<Order> findAll() {
+        return repository.findAll();
     }
 
-    // ==== helpers de mapeo ====
-
-    private OrderResponseDto mapToDto(Order order) {
-        List<OrderItemResponseDto> itemDtos = order.getItems().stream()
-                .map(this::mapItemToDto)
-                .toList();
-
-        return OrderResponseDto.builder()
-                .id(order.getId())
-                .createdAt(order.getCreatedAt())
-                .customerName(order.getCustomerName())
-                .customerEmail(order.getCustomerEmail())
-                .addressStreet(order.getAddressStreet())
-                .addressDetail(order.getAddressDetail())
-                .region(order.getRegion())
-                .city(order.getCity())
-                .notes(order.getNotes())
-                .total(order.getTotal())
-                .status(order.getStatus())
-                .items(itemDtos)
-                .build();
-    }
-
-    private OrderItemResponseDto mapItemToDto(OrderItem item) {
-        return OrderItemResponseDto.builder()
-                .id(item.getId())
-                .productId(item.getProductId())
-                .productName(item.getProductName())
-                .quantity(item.getQuantity())
-                .price(item.getPrice())
-                .build();
+    @Override
+    public Order findById(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 }

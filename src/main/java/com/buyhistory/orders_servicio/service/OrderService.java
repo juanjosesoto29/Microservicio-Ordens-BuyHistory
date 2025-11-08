@@ -1,13 +1,14 @@
 package com.buyhistory.orders_servicio.service;
 
-import com.buyhistory.orders_servicio.dto.CreateOrderRequestDto;
-import com.buyhistory.orders_servicio.dto.OrderResponseDto;
+import com.buyhistory.orders_servicio.model.Order;
 
 import java.util.List;
 
 public interface OrderService {
 
-    OrderResponseDto createOrder(CreateOrderRequestDto request);
+    Order create(Order order);
 
-    List<OrderResponseDto> getAllOrders();
+    List<Order> findAll();
+
+    Order findById(String id);
 }
