@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderItem {
 
-    private Integer productId;
+    private String id;       // opcional, Mongo le puede poner un id embebido
+    private Long productId;
     private String productName;
     private Integer quantity;
-    private Integer price;
+    private Long price;      // precio unitario
 }

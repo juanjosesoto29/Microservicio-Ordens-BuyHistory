@@ -5,7 +5,7 @@ import com.buyhistory.orders_servicio.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -16,12 +16,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order create(Order order) {
-        // Seteamos algunos campos por defecto
-        order.setId(null);                        // que Mongo genere el _id
-        if (order.getStatus() == null) {
+        // Deja que Mongo genere el id
+        order.setId(null);
+
+        // Fecha de creación si no viene
+        if (order.getCreatedAt() == null) {
+            order.setCreatedAt(Instant.now());
+        }
+
+        // Estado por defecto
+        if (order.getStatus() == null || order.getStatus().isBlank()) {
             order.setStatus("CREATED");
         }
-        order.setCreatedAt(LocalDateTime.now());
+
+        // Calcular total si vienen items
+        if (order.getItems() != null && !order.getItems().isEmpty()) {
+            long total = order.getItems().stream()
+                    .mapToLong(it -> (long) it.getPrice() * it.getQuantity())
+                    .sum();
+            order.setTotal(total);
+        }
 
         return repository.save(order);
     }
@@ -34,6 +48,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order findById(String id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found: " + id));
     }
 }

@@ -4,11 +4,12 @@ import com.buyhistory.orders_servicio.model.Order;
 import com.buyhistory.orders_servicio.model.OrderItem;
 import com.buyhistory.orders_servicio.repository.OrderRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @SpringBootApplication
@@ -31,21 +32,22 @@ public class OrdersServicioApplication {
                         .region("Región Metropolitana de Santiago")
                         .city("Santiago")
                         .notes("Entregar en conserjería")
-                        .total(170000)
+                        .total(170000L)                           // Long
                         .status("CREATED")
-                        .createdAt(LocalDateTime.now().minusDays(1))
+                        // usamos Instant en el modelo
+                        .createdAt(Instant.now().minus(1, ChronoUnit.DAYS))
                         .items(List.of(
                                 OrderItem.builder()
-                                        .productId(101)
+                                        .productId(101L)         // Long
                                         .productName("Sombrero de Napoleón")
                                         .quantity(1)
-                                        .price(120000)
+                                        .price(120000L)          // Long
                                         .build(),
                                 OrderItem.builder()
-                                        .productId(107)
+                                        .productId(107L)
                                         .productName("Calendario Maya")
                                         .quantity(1)
-                                        .price(50000)
+                                        .price(50000L)
                                         .build()
                         ))
                         .build();

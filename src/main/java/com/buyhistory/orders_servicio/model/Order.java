@@ -7,20 +7,21 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "orders")
 public class Order {
 
     @Id
-    private String id;                     // Mongo usará un ObjectId en String
+    private String id;
 
-    // Datos del cliente (coinciden con el payload del checkout)
+    private Instant createdAt;
+
     private String customerName;
     private String customerEmail;
 
@@ -30,11 +31,8 @@ public class Order {
     private String city;
     private String notes;
 
-    private Integer total;
-
-    private String status;                // p.ej. "CREATED", "PAID", etc.
-
-    private LocalDateTime createdAt;
+    private Long total;          // total en pesos
+    private String status;       // p.ej. "CREATED"
 
     private List<OrderItem> items;
 }
