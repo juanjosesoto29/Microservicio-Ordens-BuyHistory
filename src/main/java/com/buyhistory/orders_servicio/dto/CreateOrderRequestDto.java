@@ -18,6 +18,7 @@ public class CreateOrderRequestDto {
     private String addressDetail;
     private String region;
     private String city;
+
     private String notes;
 
     private List<OrderItemRequestDto> items;

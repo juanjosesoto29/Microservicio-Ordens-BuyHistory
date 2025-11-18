@@ -1,6 +1,7 @@
 package com.buyhistory.orders_servicio.dto;
 
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class OrderResponseDto {
 
     private Long id;
-    private LocalDateTime createdAt;
+
     private String customerName;
     private String customerEmail;
 
@@ -20,10 +21,12 @@ public class OrderResponseDto {
     private String addressDetail;
     private String region;
     private String city;
+
     private String notes;
 
-    private Double total;
     private String status;
+    private LocalDateTime createdAt;
+    private Double total;
 
     private List<OrderItemResponseDto> items;
 }

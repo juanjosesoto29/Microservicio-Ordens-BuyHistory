@@ -1,7 +1,11 @@
 package com.buyhistory.orders_servicio.repository;
 
 import com.buyhistory.orders_servicio.model.Order;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderRepository extends MongoRepository<Order, String> {
+import java.util.List;
+
+public interface OrderRepository extends JpaRepository<Order, Long> {
+
+    List<Order> findByCustomerEmail(String customerEmail);
 }

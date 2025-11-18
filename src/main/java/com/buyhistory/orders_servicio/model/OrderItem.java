@@ -1,18 +1,34 @@
 package com.buyhistory.orders_servicio.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
-@Builder
-@AllArgsConstructor
+@Entity
+@Table(name = "order_items")
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderItem {
 
-    private Integer productId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long productId;
+
+    @Column(nullable = false, length = 150)
     private String productName;
+
+    @Column(nullable = false)
     private Integer quantity;
-    private Integer price;
+
+    @Column(nullable = false)
+    private Double price;
+
+    // Relación con la orden
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 }
